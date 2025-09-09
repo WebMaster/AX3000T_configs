@@ -89,11 +89,13 @@ install_youtubeunblock_packages() {
     
     URL="https://raw.githubusercontent.com/WebMaster/AX3000T_configs/refs/heads/main"
     echo --- youtubeUnblock update config...
+    printf  "\033[32;1myoutubeUnblock update config...\033[0m\n"
     wget -O "/etc/config/youtubeUnblock" "$URL/youtubeUnblock"
-    echo --- youtubeUnblock update config...
-    echo --- youtubeUnblock restart
+    printf  "\033[32;1myoutubeUnblock restart...\033[0m\n"
     service youtubeUnblock restart
 }
 
 # устанавливаем или обновляем youtubeUnblock и конфиг
 install_youtubeunblock_packages
+
+printf  "\033[32;1mConfigured completed...\033[0m\n"
