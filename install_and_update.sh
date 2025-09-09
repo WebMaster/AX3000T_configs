@@ -88,7 +88,7 @@ install_youtubeunblock_packages() {
     rm -rf "$AWG_DIR"
     
     URL="https://github.com/WebMaster/AX3000T_configs"
-    wget -O "/etc/config/youtubeUnblock" "$URL/config_files/youtubeUnblock"
+    wget -O "/etc/config/youtubeUnblock" "$URL/youtubeUnblock"
     echo youtubeUnblock restart
     service youtubeUnblock restart
 }
