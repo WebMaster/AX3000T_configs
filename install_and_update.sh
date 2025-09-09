@@ -1,9 +1,9 @@
 #!/bin/sh
 
-DESCRIPTION=$(ubus call system board | jsonfilter -e '@.release.description')
-VERSION=$(ubus call system board | jsonfilter -e '@.release.version')
-findKey="OpenWrt"
-findVersion="24.10.2"
+URL="https://raw.githubusercontent.com/WebMaster/AX3000T_configs/refs/heads/main"
+DIR="/etc/config"
+DIR_BACKUP="/root/backup"
+config_files="youtubeUnblock"
 
 install_youtubeunblock_packages() {
     PKGARCH=$(opkg print-architecture | awk 'BEGIN {max=0} {if ($3 > max) {max = $3; arch = $2}} END {print arch}')
@@ -87,15 +87,22 @@ install_youtubeunblock_packages() {
 
     rm -rf "$AWG_DIR"
     
-    URL="https://raw.githubusercontent.com/WebMaster/AX3000T_configs/refs/heads/main"
-    echo --- youtubeUnblock update config...
-    printf  "\033[32;1myoutubeUnblock update config...\033[0m\n"
     wget -O "/etc/config/youtubeUnblock" "$URL/youtubeUnblock"
-    printf  "\033[32;1myoutubeUnblock restart...\033[0m\n"
     service youtubeUnblock restart
 }
 
 # устанавливаем или обновляем youtubeUnblock и конфиг
 install_youtubeunblock_packages
+
+
+
+# добавляем в роутер атоматическое выполнение скрипта каждые 40 минут
+cronTask="0 4 * * * wget -O - $URL/install_and_update.sh | sh"
+str=$(grep -i "0 4 \* \* \* wget -O - $URL/install_and_update.sh | sh" /etc/crontabs/root)
+if [ -z "$str" ] 
+then
+  echo "Add cron task auto run install_and_update..."
+  echo "$cronTask" >> /etc/crontabs/root
+fi
 
 printf  "\033[32;1mConfigured completed...\033[0m\n"
