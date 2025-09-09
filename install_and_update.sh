@@ -5,10 +5,9 @@ DIR="/etc/config"
 DIR_BACKUP="/root/backup"
 config_files="network
 firewall
-doh-proxy
+https-dns-proxy
 youtubeUnblock
-dhcp
-dns-failsafe-proxy"
+dhcp"
 
 install_youtubeunblock_packages() {
     PKGARCH=$(opkg print-architecture | awk 'BEGIN {max=0} {if ($3 > max) {max = $3; arch = $2}} END {print arch}')
@@ -97,17 +96,8 @@ install_youtubeunblock_packages() {
     service youtubeUnblock restart
 }
 
-
-echo "Update list packages..."
-opkg update
-
-# устанавливаем или обновляем youtubeUnblock и конфиг
-install_youtubeunblock_packages
-
-opkg upgrade youtubeUnblock
-opkg upgrade luci-app-youtubeUnblock
-
-# делаем бэкап конфигов
+# Начинаем с бекапа конфигов
+# и установки новых
 if [ ! -d "$DIR_BACKUP" ]
 then
   echo "Backup files..."
@@ -127,6 +117,15 @@ then
     fi
   done
 fi
+
+echo "Update list packages..."
+opkg update
+
+# устанавливаем или обновляем youtubeUnblock и конфиг
+install_youtubeunblock_packages
+
+opkg upgrade youtubeUnblock
+opkg upgrade luci-app-youtubeUnblock
 
 nameRule="option name 'Block_UDP_443'"
 str=$(grep -i "$nameRule" /etc/config/firewall)
