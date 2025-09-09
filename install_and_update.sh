@@ -101,7 +101,29 @@ install_youtubeunblock_packages
 opkg upgrade youtubeUnblock
 opkg upgrade luci-app-youtubeUnblock
 
+nameRule="option name 'Block_UDP_443'"
+str=$(grep -i "$nameRule" /etc/config/firewall)
+if [ -z "$str" ] 
+then
+  echo "Add block QUIC..."
 
+  uci add firewall rule # =cfg2492bd
+  uci set firewall.@rule[-1].name='Block_UDP_80'
+  uci add_list firewall.@rule[-1].proto='udp'
+  uci set firewall.@rule[-1].src='lan'
+  uci set firewall.@rule[-1].dest='wan'
+  uci set firewall.@rule[-1].dest_port='80'
+  uci set firewall.@rule[-1].target='REJECT'
+  uci add firewall rule # =cfg2592bd
+  uci set firewall.@rule[-1].name='Block_UDP_443'
+  uci add_list firewall.@rule[-1].proto='udp'
+  uci set firewall.@rule[-1].src='lan'
+  uci set firewall.@rule[-1].dest='wan'
+  uci set firewall.@rule[-1].dest_port='443'
+  uci set firewall.@rule[-1].target='REJECT'
+  uci commit firewall
+  service firewall restart
+fi
 
 # добавляем в роутер атоматическое выполнение скрипта каждые 40 минут
 #cronTask="0 4 * * * wget -O - $URL/install_and_update.sh | sh"
