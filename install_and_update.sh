@@ -3,7 +3,12 @@
 URL="https://raw.githubusercontent.com/WebMaster/AX3000T_configs/refs/heads/main"
 DIR="/etc/config"
 DIR_BACKUP="/root/backup"
-config_files="youtubeUnblock"
+config_files="network
+firewall
+doh-proxy
+youtubeUnblock
+dhcp
+dns-failsafe-proxy"
 
 install_youtubeunblock_packages() {
     PKGARCH=$(opkg print-architecture | awk 'BEGIN {max=0} {if ($3 > max) {max = $3; arch = $2}} END {print arch}')
@@ -65,29 +70,30 @@ install_youtubeunblock_packages() {
 		PACK_NAME="luci-app-youtubeUnblock"
 		YOUTUBEUNBLOCK_FILENAME="luci-app-youtubeUnblock-1.1.0-1-473af29.ipk"
         DOWNLOAD_URL="${BASE_URL}${YOUTUBEUNBLOCK_FILENAME}"
-		echo --- $DOWNLOAD_URL
+		echo $DOWNLOAD_URL
         wget -O "$AWG_DIR/$YOUTUBEUNBLOCK_FILENAME" "$DOWNLOAD_URL"
 		
         if [ $? -eq 0 ]; then
-            echo "--- $PACK_NAME file downloaded successfully"
+            echo "$PACK_NAME file downloaded successfully"
         else
-            echo "--- Error downloading $PACK_NAME. Please, install $PACK_NAME manually and run the script again"
+            echo "Error downloading $PACK_NAME. Please, install $PACK_NAME manually and run the script again"
             exit 1
         fi
         
         opkg install "$AWG_DIR/$YOUTUBEUNBLOCK_FILENAME"
 
         if [ $? -eq 0 ]; then
-            echo "--- $PACK_NAME file installing successfully"
+            echo "$PACK_NAME file installing successfully"
         else
-            echo "--- Error installing $PACK_NAME. Please, install $PACK_NAME manually and run the script again"
+            echo "Error installing $PACK_NAME. Please, install $PACK_NAME manually and run the script again"
             exit 1
         fi
 	fi
 
     rm -rf "$AWG_DIR"
     
-    wget -O "/etc/config/youtubeUnblock" "$URL/youtubeUnblock"
+    echo "youtubeUnblock update config..."
+    wget -O "/etc/config/youtubeUnblock" "$URL/config_files/youtubeUnblock"
     service youtubeUnblock restart
 }
 
@@ -100,6 +106,27 @@ install_youtubeunblock_packages
 
 opkg upgrade youtubeUnblock
 opkg upgrade luci-app-youtubeUnblock
+
+# делаем бэкап конфигов
+if [ ! -d "$DIR_BACKUP" ]
+then
+  echo "Backup files..."
+  mkdir -p $DIR_BACKUP
+  for file in $config_files
+  do
+    cp -f "$DIR/$file" "$DIR_BACKUP/$file"  
+  done
+
+  echo "Replace configs..."
+
+  for file in $config_files
+  do
+    if [ "$file" != "dhcp" ] 
+    then 
+      wget -O "$DIR/$file" "$URL/config_files/$file" 
+    fi
+  done
+fi
 
 nameRule="option name 'Block_UDP_443'"
 str=$(grep -i "$nameRule" /etc/config/firewall)
@@ -125,7 +152,7 @@ then
   service firewall restart
 fi
 
-# добавляем в роутер атоматическое выполнение скрипта каждые 40 минут
+# добавляем в роутер автоматическое выполнение скрипта каждые 4 часа 0 минут
 #cronTask="0 4 * * * wget -O - $URL/install_and_update.sh | sh"
 #str=$(grep -i "0 4 \* \* \* wget -O - $URL/install_and_update.sh | sh" /etc/crontabs/root)
 #if [ -z "$str" ] 
