@@ -91,18 +91,25 @@ install_youtubeunblock_packages() {
     service youtubeUnblock restart
 }
 
+
+echo "Update list packages..."
+opkg update
+
 # устанавливаем или обновляем youtubeUnblock и конфиг
 install_youtubeunblock_packages
+
+opkg upgrade youtubeUnblock
+opkg upgrade luci-app-youtubeUnblock
 
 
 
 # добавляем в роутер атоматическое выполнение скрипта каждые 40 минут
-cronTask="0 4 * * * wget -O - $URL/install_and_update.sh | sh"
-str=$(grep -i "0 4 \* \* \* wget -O - $URL/install_and_update.sh | sh" /etc/crontabs/root)
-if [ -z "$str" ] 
-then
-  echo "Add cron task auto run install_and_update..."
-  echo "$cronTask" >> /etc/crontabs/root
-fi
+#cronTask="0 4 * * * wget -O - $URL/install_and_update.sh | sh"
+#str=$(grep -i "0 4 \* \* \* wget -O - $URL/install_and_update.sh | sh" /etc/crontabs/root)
+#if [ -z "$str" ] 
+#then
+#  echo "Add cron task auto run install_and_update..."
+#  echo "$cronTask" >> /etc/crontabs/root
+#fi
 
 printf  "\033[32;1mConfigured completed...\033[0m\n"
