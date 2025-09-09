@@ -38,22 +38,22 @@ install_youtubeunblock_packages() {
 
         YOUTUBEUNBLOCK_FILENAME="youtubeUnblock-1.1.0-2-2d579d5-${PKGARCH}-openwrt-23.05.ipk"
         DOWNLOAD_URL="${BASE_URL}${YOUTUBEUNBLOCK_FILENAME}"
-		echo $DOWNLOAD_URL
+		echo --- $DOWNLOAD_URL
         wget -O "$AWG_DIR/$YOUTUBEUNBLOCK_FILENAME" "$DOWNLOAD_URL"
 
         if [ $? -eq 0 ]; then
-            echo "$PACK_NAME file downloaded successfully"
+            echo "--- $PACK_NAME file downloaded successfully"
         else
-            echo "Error downloading $PACK_NAME. Please, install $PACK_NAME manually and run the script again"
+            echo "--- Error downloading $PACK_NAME. Please, install $PACK_NAME manually and run the script again"
             exit 1
         fi
         
         opkg install "$AWG_DIR/$YOUTUBEUNBLOCK_FILENAME"
 
         if [ $? -eq 0 ]; then
-            echo "$PACK_NAME file installing successfully"
+            echo "--- $PACK_NAME file installing successfully"
         else
-            echo "Error installing $PACK_NAME. Please, install $PACK_NAME manually and run the script again"
+            echo "--- Error installing $PACK_NAME. Please, install $PACK_NAME manually and run the script again"
             exit 1
         fi
     fi
@@ -65,22 +65,22 @@ install_youtubeunblock_packages() {
 		PACK_NAME="luci-app-youtubeUnblock"
 		YOUTUBEUNBLOCK_FILENAME="luci-app-youtubeUnblock-1.1.0-1-473af29.ipk"
         DOWNLOAD_URL="${BASE_URL}${YOUTUBEUNBLOCK_FILENAME}"
-		echo $DOWNLOAD_URL
+		echo --- $DOWNLOAD_URL
         wget -O "$AWG_DIR/$YOUTUBEUNBLOCK_FILENAME" "$DOWNLOAD_URL"
 		
         if [ $? -eq 0 ]; then
-            echo "$PACK_NAME file downloaded successfully"
+            echo "--- $PACK_NAME file downloaded successfully"
         else
-            echo "Error downloading $PACK_NAME. Please, install $PACK_NAME manually and run the script again"
+            echo "--- Error downloading $PACK_NAME. Please, install $PACK_NAME manually and run the script again"
             exit 1
         fi
         
         opkg install "$AWG_DIR/$YOUTUBEUNBLOCK_FILENAME"
 
         if [ $? -eq 0 ]; then
-            echo "$PACK_NAME file installing successfully"
+            echo "--- $PACK_NAME file installing successfully"
         else
-            echo "Error installing $PACK_NAME. Please, install $PACK_NAME manually and run the script again"
+            echo "--- Error installing $PACK_NAME. Please, install $PACK_NAME manually and run the script again"
             exit 1
         fi
 	fi
@@ -88,10 +88,10 @@ install_youtubeunblock_packages() {
     rm -rf "$AWG_DIR"
     
     URL="https://raw.githubusercontent.com/WebMaster/AX3000T_configs/refs/heads/main"
-    echo youtubeUnblock update config...
+    echo --- youtubeUnblock update config...
     wget -O "/etc/config/youtubeUnblock" "$URL/youtubeUnblock"
-    echo youtubeUnblock update config...
-    echo youtubeUnblock restart
+    echo --- youtubeUnblock update config...
+    echo --- youtubeUnblock restart
     service youtubeUnblock restart
 }
 
