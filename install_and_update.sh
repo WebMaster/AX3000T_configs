@@ -19,7 +19,7 @@ cronTask="10 4 * * * sh <(wget -q -O - https://raw.githubusercontent.com/WebMast
 str=$(grep -i "10 4 \* \* \* sh \<\(wget -q -O - https://raw.githubusercontent.com/WebMaster/AX3000T_configs/refs/heads/main/install_and_update.sh\) 2\>&1 \| tee /root/run.log" /etc/crontabs/root)
 if [ -z "$str" ] 
 then
-    echo "Add cron task auto reboot service zapret..."
+    echo "Add cron task auto run script install_and_update.sh"
     echo "$cronTask" >> /etc/crontabs/root
 fi
 
