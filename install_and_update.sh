@@ -9,3 +9,5 @@ lampa.mx
 lampishe.cc
 '
 uci commit podkop
+
+echo "podkop user domains update successfully"
